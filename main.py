@@ -16,7 +16,7 @@ def run_command(cmd):
 def check_internet():
     pass
 
-
+test
 
 
 print(run_command(["ping", "-c", "1", "8.8.8.8"]).returncode)
