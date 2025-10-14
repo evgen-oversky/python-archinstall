@@ -1,2 +1,18 @@
+---
+
 disk:
   device: "/dev/sda"
+  
+  partitions:  
+    - type: "primary"
+      start: "1MiB"
+      end: "1025MiB"
+      efi: true
+      filesystem: "fat32"
+      mount_point: "boot/efi"
+    
+    - type: "primary"
+      start: "1025MiB"
+      end: "20GiB"
+      filesystem: "ext4"
+      mount_point: "/"

@@ -34,9 +34,18 @@ def run_command(cmd):
 def check_internet():
     pass
 
-load_config()
-run_command("parted -s /dev/sda mklabel gpt")
 
+config = load_config()
+
+def create_partitions(config):
+    disk = config['disk']
+    run_command(f"parted -s {disk['device']} mklabel gpt")
+    for partition in disk['partitions']:
+        part_type = partition['type']
+        start = partition['start']
+        end = partition['end']
+        filesystem = partition['filesystem']
+        run_command(f"parted -s {disk['device']} mkpart {part_type} {filesystem} {start} {end}")
 
 #def disk_parted():
 #    commands = [
@@ -45,7 +54,7 @@ run_command("parted -s /dev/sda mklabel gpt")
 #    ]
 
 
-
+create_partitions(config)
 
 
 
