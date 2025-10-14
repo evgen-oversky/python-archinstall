@@ -20,7 +20,6 @@ def load_config(config_file="config.yml"):
         print(f"Ошибка парсинга YAML: {e}")
         sys.exit(1)
 
-
 def run_command(cmd):
     cmd = cmd.split()
     try:
@@ -40,13 +39,16 @@ config = load_config()
 def create_partitions(config):
     disk = config['disk']
     run_command(f"parted -s {disk['device']} mklabel gpt")
-    for partition in disk['partitions']:
-        part_type = partition['type']
-        start = partition['start']
-        end = partition['end']
-        filesystem = partition['filesystem']
-        run_command(f"parted -s {disk['device']} mkpart {part_type} {filesystem} {start} {end}")
+    for i, part in enumerate(disk['partitions'], 1):
+        label = part['label']
+        start = part['start']
+        end = part['end']
+        filesystem = part['filesystem']
+        run_command(f"parted -s {disk['device']} mkpart {label} {filesystem} {start} {end}")
+        if part.get('efi', False):
+            run_command(f"parted -s {disk['device']} set {i} esp on")
 
+ 
 #def disk_parted():
 #    commands = [
 #        f"parted -s /dev/sda mklabel gpt",
