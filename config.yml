@@ -1,0 +1,2 @@
+disk:
+  device: "/dev/sda"
