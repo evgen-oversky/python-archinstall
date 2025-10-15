@@ -3,20 +3,21 @@
 # https://wiki.archlinux.org/title/Parted
 disk:
   device: "/dev/sda"
-  
+  create_gpt: True
+
   partitions:
-    - label: "esp"
+    - create_partition: True
+      name: "esp"
       part: "/dev/sda1"
       start: "1MiB"
       end: "1025MiB"
-      efi: true
       filesystem: "fat32"
       mount_point: "boot/efi"
-    
-    - label: "root"
+
+    - create_partition: True
+      name: "root"
       part: "/dev/sda2"
       start: "1025MiB"
       end: "20GiB"
       filesystem: "ext4"
       mount_point: "/"
-

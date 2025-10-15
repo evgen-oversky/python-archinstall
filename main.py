@@ -33,16 +33,20 @@ def check_internet():
 
 def create_partitions(config):
     disk = config['disk']
-    run_command(f"parted -s {disk['device']} mklabel gpt")
-    for part in disk['partitions']:
-        label = part['label']
-        number_part = int(part['part'][-1])
-        start = part['start']
-        end = part['end']
-        filesystem = part['filesystem']
-        run_command(f"parted -s {disk['device']} mkpart {label} {filesystem} {start} {end}")
-        if part.get('efi', False):
-            run_command(f"parted -s {disk['device']} set {number_part} esp on")
+    if disk['create_gpt']:
+        run_command(f"parted -s {disk['device']} mklabel gpt")
+    for partition in disk['partitions']:
+        if partition['create_partition']:
+            part_name = partition['name']
+            part_number = int(partition['part'][-1])
+            part_start = partition['start']
+            part_end = partition['end']
+            part_filesystem = partition['filesystem']
+            run_command(f"parted -s {disk['device']} mkpart {part_name} {part_filesystem} {part_start} {part_end}")
+            if part_name == "esp":
+                run_command(f"parted -s {disk['device']} set {part_number} esp on")
+
+
 
 def format_partitions(config):
     disk = config['disk']
@@ -57,13 +61,16 @@ def format_partitions(config):
             print("Файловая система не найдена!")
 
 
+
+
 if __name__ == "__main__":
     start_time = time.time()
 
     config = load_config()
 
+
     create_partitions(config)
-    format_partitions(config)
+    #format_partitions(config)
 
     duration = time.time() - start_time
     print(f"{duration:.2f}")
