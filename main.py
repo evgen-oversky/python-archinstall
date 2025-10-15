@@ -39,25 +39,31 @@ config = load_config()
 def create_partitions(config):
     disk = config['disk']
     run_command(f"parted -s {disk['device']} mklabel gpt")
-    for i, part in enumerate(disk['partitions'], 1):
+    for part in disk['partitions']:
         label = part['label']
+        number_part = int(part['part'][-1])
         start = part['start']
         end = part['end']
         filesystem = part['filesystem']
         run_command(f"parted -s {disk['device']} mkpart {label} {filesystem} {start} {end}")
         if part.get('efi', False):
-            run_command(f"parted -s {disk['device']} set {i} esp on")
+            run_command(f"parted -s {disk['device']} set {number_part} esp on")
 
- 
-#def disk_parted():
-#    commands = [
-#        f"parted -s /dev/sda mklabel gpt",
-#        f"parted -s ",
-#    ]
+def format_partitions(config):
+    disk = config['disk']
+    for part in disk['partitions']:
+        part_device = part['part']
+        filesystem = part['filesystem']
+        if filesystem == 'fat32':
+            run_command(f"mkfs.fat -F32 {part_device}")
+        elif filesystem == 'ext4':
+            run_command(f"mkfs.ext4 -F {part_device}")
+        else:
+            print("Файловая система не найдена!")
 
 
 create_partitions(config)
-
+format_partitions(config)
 
 
 

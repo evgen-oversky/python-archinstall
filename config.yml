@@ -1,10 +1,12 @@
 ---
 
+# https://wiki.archlinux.org/title/Parted
 disk:
   device: "/dev/sda"
   
-  partitions:  
+  partitions:
     - label: "efi"
+      part: "/dev/sda1"
       start: "1MiB"
       end: "1025MiB"
       efi: true
@@ -12,6 +14,7 @@ disk:
       mount_point: "boot/efi"
     
     - label: "root"
+      part: "/dev/sda2"
       start: "1025MiB"
       end: "20GiB"
       filesystem: "ext4"
