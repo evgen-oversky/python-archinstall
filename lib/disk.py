@@ -1,19 +1,29 @@
+import sys
+
 from lib.utils import run_command
 
 def create_partitions(config):
     disk = config['disk']
     if disk['create_gpt']:
-        run_command(f"parted -s {disk['device']} mklabel gpt")
+        run_command(f"sgdisk -Z {disk['device']}")
+        run_command(f"sgdisk -o {disk['device']}")
     for partition in disk['partitions']:
         if partition['create_partition']:
             part_name = partition['name']
-            part_number = int(partition['part'][-1])
-            part_start = partition['start']
-            part_end = partition['end']
+            part_number = partition['part'][-1]
+            part_size = partition['size']
+            if part_name == "efi":
+                part_flag = "ef00"
+            elif part_name == "root":
+                part_flag = "8304"
+            elif part_name == "home":
+                part_flag = "8302"
+            else:
+                print("Раздел не поддерживается! Завершение работы скрипта")
+                sys.exit(1)
             part_filesystem = partition['filesystem']
-            run_command(f"parted -s {disk['device']} mkpart {part_name} {part_filesystem} {part_start} {part_end}")
-            if part_name == "esp":
-                run_command(f"parted -s {disk['device']} set {part_number} esp on")
+            
+            run_command(f"sgdisk {disk['device']} -n {part_number}:0:{part_size} -t {part_number}:{part_flag} -c {part_number}:{part_name}")
 
 def format_partitions(config):
     disk = config['disk']

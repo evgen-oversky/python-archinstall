@@ -7,18 +7,16 @@ disk:
 
   partitions:
     - create_partition: True
-      name: "esp"
+      name: "efi"
       part: "/dev/sda1"
-      start: "1MiB"
-      end: "1025MiB"
+      size: "+1024M"
       filesystem: "fat32"
       mount_point: "boot/efi"
 
     - create_partition: True
       name: "root"
       part: "/dev/sda2"
-      start: "1025MiB"
-      end: "20GiB"
+      size: "+10G"
       filesystem: "ext4"
       mount_point: "/"
     
