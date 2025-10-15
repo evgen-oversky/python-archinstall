@@ -6,8 +6,6 @@ import subprocess
 
 import time
 
-start_time = time.time()
-
 def load_config(config_file="config.yml"):
     try:
         with open(config_file, 'r') as f:
@@ -32,9 +30,6 @@ def run_command(cmd):
 
 def check_internet():
     pass
-
-
-config = load_config()
 
 def create_partitions(config):
     disk = config['disk']
@@ -62,11 +57,14 @@ def format_partitions(config):
             print("Файловая система не найдена!")
 
 
-create_partitions(config)
-format_partitions(config)
+if __name__ == "__main__":
+    start_time = time.time()
 
+    config = load_config()
 
+    create_partitions(config)
+    format_partitions(config)
 
-duration = time.time() - start_time
-print(f"{duration:.2f}")
+    duration = time.time() - start_time
+    print(f"{duration:.2f}")
 

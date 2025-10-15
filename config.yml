@@ -5,7 +5,7 @@ disk:
   device: "/dev/sda"
   
   partitions:
-    - label: "efi"
+    - label: "esp"
       part: "/dev/sda1"
       start: "1MiB"
       end: "1025MiB"
@@ -19,3 +19,4 @@ disk:
       end: "20GiB"
       filesystem: "ext4"
       mount_point: "/"
+
