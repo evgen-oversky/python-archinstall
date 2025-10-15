@@ -17,12 +17,14 @@ def create_partitions(config):
 
 def format_partitions(config):
     disk = config['disk']
-    for part in disk['partitions']:
-        part_device = part['part']
-        filesystem = part['filesystem']
-        if filesystem == 'fat32':
-            run_command(f"mkfs.fat -F32 {part_device}")
-        elif filesystem == 'ext4':
-            run_command(f"mkfs.ext4 -F {part_device}")
-        else:
-            print("Файловая система не найдена!")
+    for partition in disk['partitions']:
+        if partition['create_partition']:
+            part_device = partition['part']
+            part_filesystem = partition['filesystem']
+            if part_filesystem == 'fat32':
+                run_command(f"mkfs.fat -F32 {part_device}")
+            elif part_filesystem == 'ext4':
+                run_command(f"mkfs.ext4 -F {part_device}")
+            else:
+                print("Файловая система не найдена!")
+
