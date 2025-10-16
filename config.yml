@@ -1,22 +1,20 @@
 ---
 
-# https://wiki.archlinux.org/title/Parted
 disk:
   device: "/dev/sda"
-  create_gpt: True
+  new_gpt: True
 
   partitions:
-    - create_partition: True
-      name: "efi"
-      part: "/dev/sda1"
-      size: "+1024M"
+    - name: "efi"
+      create_partition: True
+      part_dev: "/dev/sda1"
+      size: "+1G"
       filesystem: "fat32"
-      mount_point: "boot/efi"
 
-    - create_partition: True
-      name: "root"
+    - name: "btrfs"
+      create_partition: True
       part: "/dev/sda2"
       size: "+10G"
-      filesystem: "ext4"
-      mount_point: "/"
-    
+      filesystem: "btrfs"
+
+  

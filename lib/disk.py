@@ -4,7 +4,7 @@ from lib.utils import run_command
 
 def create_partitions(config):
     disk = config['disk']
-    if disk['create_gpt']:
+    if disk['new_gpt']:
         run_command(f"sgdisk -Z {disk['device']}")
         run_command(f"sgdisk -o {disk['device']}")
     for partition in disk['partitions']:
@@ -14,10 +14,8 @@ def create_partitions(config):
             part_size = partition['size']
             if part_name == "efi":
                 part_flag = "ef00"
-            elif part_name == "root":
-                part_flag = "8304"
-            elif part_name == "home":
-                part_flag = "8302"
+            elif part_name == "btrfs":
+                part_flag = "8300"
             else:
                 print("Раздел не поддерживается! Завершение работы скрипта")
                 sys.exit(1)
@@ -33,8 +31,8 @@ def format_partitions(config):
             part_filesystem = partition['filesystem']
             if part_filesystem == 'fat32':
                 run_command(f"mkfs.fat -F32 {part_device}")
-            elif part_filesystem == 'ext4':
-                run_command(f"mkfs.ext4 -F {part_device}")
+            elif part_filesystem == 'btrfs':
+                run_command(f"mkfs.btrfs -f {part_device}")
             else:
                 print("Файловая система не найдена!")
 
