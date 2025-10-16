@@ -19,6 +19,9 @@ disk:
       part_size: "+10G"
       part_fs: "btrfs"
 
-#  subvolumes:
+  subvolumes:
+    - vol_name: "@"
+
+    - vol_name: "@home"
 
 

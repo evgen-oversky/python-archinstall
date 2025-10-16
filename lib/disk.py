@@ -27,5 +27,18 @@ def format_partitions(config):
             elif part_fs == 'btrfs':
                 run_command(f"mkfs.btrfs -f {part_dev}")
 
+def create_subvolumes(config):
+    disk = config['disk']
+    for partition in disk['partitions']:
+        if partition['part_label'] == 'btrfs':
+            part_btrfs = partition['part_dev']
+            break
+    run_command(f"mount {part_btrfs} /mnt")
+    for subvolume in disk['subvolumes']:
+        vol_name = subvolume['vol_name']
+        run_command(f"btrfs subvolume create /mnt/{vol_name}")
+    run_command(f"umount /mnt")
+
+# def mount_subvolumes(config):
 
 
