@@ -4,35 +4,28 @@ from lib.utils import run_command
 
 def create_partitions(config):
     disk = config['disk']
-    if disk['new_gpt']:
+    if disk['new_table']:
         run_command(f"sgdisk -Z {disk['device']}")
         run_command(f"sgdisk -o {disk['device']}")
     for partition in disk['partitions']:
         if partition['create_partition']:
-            part_name = partition['name']
-            part_number = partition['part'][-1]
-            part_size = partition['size']
-            if part_name == "efi":
-                part_flag = "ef00"
-            elif part_name == "btrfs":
-                part_flag = "8300"
-            else:
-                print("Раздел не поддерживается! Завершение работы скрипта")
-                sys.exit(1)
-            part_filesystem = partition['filesystem']
-            
-            run_command(f"sgdisk {disk['device']} -n {part_number}:0:{part_size} -t {part_number}:{part_flag} -c {part_number}:{part_name}")
+            part_label = partition['part_label']
+            part_number = partition['part_dev'][-1]
+            part_flag = partition['part_flag']
+            part_size = partition['part_size']
+            part_fs = partition['part_fs']
+            run_command(f"sgdisk {disk['device']} -n {part_number}:0:{part_size} -t {part_number}:{part_flag} -c {part_number}:{part_label}")
 
 def format_partitions(config):
     disk = config['disk']
     for partition in disk['partitions']:
         if partition['create_partition']:
-            part_device = partition['part']
-            part_filesystem = partition['filesystem']
-            if part_filesystem == 'fat32':
-                run_command(f"mkfs.fat -F32 {part_device}")
-            elif part_filesystem == 'btrfs':
-                run_command(f"mkfs.btrfs -f {part_device}")
-            else:
-                print("Файловая система не найдена!")
+            part_dev = partition['part_dev']
+            part_fs = partition['part_fs']
+            if part_fs == 'fat32':
+                run_command(f"mkfs.fat -F32 {part_dev}")
+            elif part_fs == 'btrfs':
+                run_command(f"mkfs.btrfs -f {part_dev}")
+
+
 
