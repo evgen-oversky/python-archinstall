@@ -2,6 +2,7 @@
 
 disk:
   device: "/dev/sda"
+  vol_mount_args: ",compress=zstd:1,noatime,space_cache=v2"
   new_table: True
 
   partitions:
@@ -20,8 +21,8 @@ disk:
       part_fs: "btrfs"
 
   subvolumes:
-    - vol_name: "@"
-
-    - vol_name: "@home"
+    - vol_name: "@arch"
+    - vol_name: "@arch-home"
+    - vol_name: "@snapshots"
 
 

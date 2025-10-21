@@ -39,6 +39,16 @@ def create_subvolumes(config):
         run_command(f"btrfs subvolume create /mnt/{vol_name}")
     run_command(f"umount /mnt")
 
-# def mount_subvolumes(config):
+def mount_subvolumes(config):
+    disk = config['disk']
+    for partition in disk['partitions']
+        if partition['part_label'] == 'btrfs':
+            part_btrfs = partition['part_dev']
+            break
+    vol_mount_args = disk['vol_mount_args']
+    for subvolume in disk['subvolumes']:
+        run_command(f"mount -o subvol={subvolume['vol_name']}{vol_mount_args} {part_btrfs} {}")
+    
+
 
 
