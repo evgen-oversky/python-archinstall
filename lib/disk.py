@@ -39,16 +39,19 @@ def create_subvolumes(config):
         run_command(f"btrfs subvolume create /mnt/{vol_name}")
     run_command(f"umount /mnt")
 
-def mount_subvolumes(config):
+def mounting(config):
     disk = config['disk']
-    for partition in disk['partitions']
+    main_mount_point = disk['main_mount_point']
+    for partition in disk['partitions']:
         if partition['part_label'] == 'btrfs':
-            part_btrfs = partition['part_dev']
-            break
-    vol_mount_args = disk['vol_mount_args']
-    for subvolume in disk['subvolumes']:
-        run_command(f"mount -o subvol={subvolume['vol_name']}{vol_mount_args} {part_btrfs} {}")
-    
-
-
-
+            for subvolume in disk['subvolumes']:
+                subvol_name = subvolume['vol_name']
+                subvol_mount_point = main_mount_point + subvolume['mount_point']
+                subvol_mount_args = "subvol=" + subvol_name + "," + disk['subvol_mount_args']
+                run_command(f"mkdir -p {subvol_mount_point}")
+                run_command(f"mount -o {subvol_mount_args} {partition['part_dev']} {subvol_mount_point}")
+        else:
+            part_dev = partition['part_dev']
+            part_mount_point = main_mount_point + partition['mount_point']
+            run_command(f'mkdir -p {part_mount_point}')
+            run_command(f'mount {part_dev} {part_mount_point}')

@@ -2,29 +2,33 @@
 
 disk:
   device: "/dev/sda"
-  vol_mount_args: ",compress=zstd:1,noatime,space_cache=v2"
+  main_mount_point: "/mnt"
   new_table: True
 
   partitions:
-    - part_label: "efi"
-      create_partition: True
+    - create_partition: True
+      part_label: "efi"
       part_dev: "/dev/sda1"
       part_flag: "ef00"
       part_size: "+1G"
       part_fs: "fat32"
+      mount_point: "/boot/efi"
 
-    - part_label: "btrfs"
-      create_partition: True
+    - create_partition: True
+      part_label: "btrfs"
       part_dev: "/dev/sda2"
       part_flag: "8300"
       part_size: "+10G"
       part_fs: "btrfs"
 
+  subvol_mount_args: "compress=zstd:1,noatime,space_cache=v2"
   subvolumes:
     - vol_name: "@arch"
-      mount_point: ""
+      mount_point: "/"
 
     - vol_name: "@arch-home"
+      mount_point: "/home"
+    
     - vol_name: "@snapshots"
-
+      mount_point: "/.snapshots"
 
