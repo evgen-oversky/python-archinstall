@@ -22,6 +22,8 @@ disk:
 
   subvolumes:
     - vol_name: "@arch"
+      mount_point: ""
+
     - vol_name: "@arch-home"
     - vol_name: "@snapshots"
 
