@@ -5,7 +5,11 @@ def install_base_system(config):
     run_command(f"pacstrap -K /mnt {pkgs}")
 
 def gen_fstab():
-    run_command("genfstab -U /mnt >> /mnt/etc/fstab")    
+    run_command("genfstab -U /mnt >> /mnt/etc/fstab")  
+
+def set_root_password(config):
+    password = config['system']['root_password']
+    run_command(f"echo 'root:{password}' | chpasswd")  
 
 # Сеть
 
