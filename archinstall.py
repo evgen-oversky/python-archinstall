@@ -1,5 +1,5 @@
 from lib.utils import load_config
-from lib.disk import create_partitions, format_partitions, create_subvolumes, mounting
+from lib.disk import *
 
 import time
 
@@ -15,7 +15,8 @@ if __name__ == "__main__":
     create_partitions(config)
     format_partitions(config)
     create_subvolumes(config)
-    mounting(config)
+    mount_subvolumes(config)
+    mount_partitions(config)
 
     duration = time.time() - start_time
     print(f"{duration:.2f}")
