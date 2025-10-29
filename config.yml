@@ -18,10 +18,10 @@ disk:
       part_label: "btrfs"
       part_dev: "/dev/sda2"
       part_flag: "8300"
-      part_size: "+10G"
+      part_size: "+100G"
       part_fs: "btrfs"
 
-  subvol_mount_args: "compress=zstd:1,noatime,space_cache=v2"
+  subvol_mount_args: "compress=zstd:1,noatime,space_cache=v2,ssd"
   subvolumes:
     - vol_name: "@arch"
       mount_point: "/"
@@ -31,4 +31,19 @@ disk:
     
     - vol_name: "@snapshots"
       mount_point: "/.snapshots"
+
+system:
+
+  pkgs:
+    - base
+    - base-devel
+    - linux-zen
+    - linux-zen-headers
+    - amd-ucode
+    - linux-firmware
+    - sof-firmware
+    - btrfs-progs
+    - sudo
+    - vim
+    - git
 
