@@ -16,8 +16,11 @@ def load_config(config_file="config.yml"):
         print(f"Ошибка парсинга YAML: {e}")
         sys.exit(1)
 
-def run_command(cmd):
-    cmd = cmd.split()
+def run_command(cmd, chroot=False):
+    if chroot:
+        cmd = ['arch-chroot', '/mnt'] + cmd.split()
+    else:
+        cmd = cmd.split()
     try:
         result = subprocess.run(cmd, check=True, capture_output=True, text=True)
         return result
