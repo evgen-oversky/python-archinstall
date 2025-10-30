@@ -1,14 +1,14 @@
 ---
 
 disk:
-  device: "/dev/sda"
+  device: "/dev/sdb"
   main_mount_point: "/mnt"
   new_table: True
 
   partitions:
     - create_partition: True
       part_label: "efi"
-      part_dev: "/dev/sda1"
+      part_dev: "/dev/sdb1"
       part_flag: "ef00"
       part_size: "+1G"
       part_fs: "fat32"
@@ -16,9 +16,9 @@ disk:
 
     - create_partition: True
       part_label: "btrfs"
-      part_dev: "/dev/sda2"
+      part_dev: "/dev/sdb2"
       part_flag: "8300"
-      part_size: "+100G"
+      part_size: "0"
       part_fs: "btrfs"
 
   subvol_mount_args: "compress=zstd:1,noatime,space_cache=v2,ssd"
@@ -47,4 +47,13 @@ system:
     - vim
     - git
 
+  time_zone: "Asia/Krasnoyarsk"
+
   root_password: "1111"
+
+user:
+  user_name: "oversky"
+  user_password: "555555"
+  user_groups:
+    - wheel
+  user_shell: "bash"
