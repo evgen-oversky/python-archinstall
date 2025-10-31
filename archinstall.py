@@ -16,7 +16,7 @@ if __name__ == "__main__":
     mount_partitions(config)
     install_base_system(config)
     gen_fstab()
-    set_time(config)
+    set_root_password(config)
 
     duration = time.time() - start_time
     print(f"{duration:.2f}")

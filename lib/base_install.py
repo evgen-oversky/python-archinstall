@@ -7,17 +7,11 @@ def install_base_system(config):
 def gen_fstab():
     run_command("genfstab -U /mnt >> /mnt/etc/fstab")  
 
-def set_time(config):
-    time_zone = config['system']['time_zone']
-    run_command(f"ln -sf /ust/share/zoneinfo/{time_zone} /etc/localtime", chroot=True)
-    run_command("hwclock --systohc", chroot=True)
+def network_setting(config):
 
-def set_root_password(config):
-    root_password = config['system']['root_password']
-    run_command(f"echo 'root:{root_password}' | chpasswd", chroot=True)
-
-def create_user(config):
-    pass
+    run_command("systemctl enable systemd-networkd.service")
+    run_command("systemctl start systemd-networkd.service")
+    
 
 # Сеть
 
@@ -28,5 +22,10 @@ def create_user(config):
 # Загрузчик
 
 # Клонирование репозитория
+
+def set_root_password(config):
+    root_password = config['system']['root_password']
+    run_command(f"echo 'root:{root_password}' | chpasswd", chroot=True)
+
 
 # Перезагрузка

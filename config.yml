@@ -43,6 +43,7 @@ system:
     - linux-firmware
     - sof-firmware
     - btrfs-progs
+    - iwd
     - sudo
     - vim
     - git
