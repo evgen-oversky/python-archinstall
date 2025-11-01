@@ -111,8 +111,8 @@ def install_boot_loader(config):
             esp_mount_point = partition['mount_point']
             break
     run_command("bootctl install", chroot=True)
-    run_command(f"cp files/systemd-boot/loader.conf /mnt{esp_mount_point}/loader")
-    run_command(f"cp files/systemd-boot/arch.conf /mnt{esp_mount_point}/loader/entries")
+    run_command(f"cp files/systemd-boot/loader.conf /mnt{esp_mount_point}/loader", chroot=True)
+    run_command(f"cp files/systemd-boot/arch.conf /mnt{esp_mount_point}/loader/entries", chroot=True)
 
 
 
