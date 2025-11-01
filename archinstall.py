@@ -109,6 +109,7 @@ def install_boot_loader(config):
     for partition in config['disk']['partitions']:
         if partition['part_label'] == 'efi':
             esp_mount_point = partition['mount_point']
+            break
     run_command("bootctl install", chroot=True)
     run_command(f"cp files/systemd-boot/loader.conf /mnt{esp_mount_point}/loader")
     run_command(f"cp files/systemd-boot/arch.conf /mnt{esp_mount_point}/loader/entries")
