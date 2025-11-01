@@ -63,20 +63,35 @@ def mount_partitions(config):
         else:
             part_dev = partition['part_dev']
             part_mount_point = main_mount_point + partition['mount_point']
-            run_command(f'mkdir -p {part_mount_point}')
-            run_command(f'mount {part_dev} {part_mount_point}')
-
-
+            run_command(f"mkdir -p {part_mount_point}")
+            run_command(f"mount {part_dev} {part_mount_point}")
 
 def install_base_pkgs(config):
     pkgs = " ".join(config['system']['pkgs'])
     run_command(f"pacstrap -K /mnt {pkgs}")
 
 def gen_fstab():
-    run_command("genfstab -U /mnt >> /mnt/etc/fstab")  
+    run_command("genfstab -U /mnt >> /mnt/etc/fstab")
+
+def set_geolocation(config):
+    time_zone = config['system']['time_zone']
+    locales = "\n".join(config['system']['locales']) + "\n"
+    language = "LANG=" + config['system']['language']
+
+    run_command(f"ln -sf /usr/share/zoneinfo/{time_zone} /etc/localtime", chroot=True)
+    run_command("hwclock --systohc", chroot=True)
+    with open("/mnt/etc/locale.gen", "a") as f:
+        f.write(f"{locales}")
+    with open("/mnt/etc/locale.conf", "w") as f:
+        f.write(f"{language}")
+    run_command("locale-gen")
+
+
+
+
+
 
 def network_setting(config):
-
     run_command("systemctl enable systemd-networkd.service")
     run_command("systemctl start systemd-networkd.service")
     
@@ -105,15 +120,15 @@ if __name__ == "__main__":
 
     config = load_config()
 
-    create_partitions(config)
-    format_partitions(config)
-    create_subvolumes(config)
-    mount_subvolumes(config)
-    mount_partitions(config)
-    install_base_pkgs(config)
-    gen_fstab()
-    set_root_password(config)
-
+#    create_partitions(config)
+#    format_partitions(config)
+#    create_subvolumes(config)
+#    mount_subvolumes(config)
+#    mount_partitions(config)
+#    install_base_pkgs(config)
+#    gen_fstab()
+#    set_root_password(config)
+    set_geolocation(config)
     duration = time.time() - start_time
     print(f"{duration:.2f}")
 

@@ -49,6 +49,12 @@ system:
     - git
 
   time_zone: "Asia/Krasnoyarsk"
+  locales:
+    - en_US.UTF-8 UTF-8
+    - ru_RU.UTF-8 UTF-8
+  language: "en_US.UTF-8"
+
+
 
   root_password: "1111"
 
