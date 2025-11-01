@@ -77,6 +77,7 @@ def gen_fstab():
 
 
 def set_geolocation(config):
+    
     time_zone = config['system']['time_zone']
     locales = "\n".join(config['system']['locales']) + "\n"
     language = "LANG=" + config['system']['language']
@@ -102,8 +103,14 @@ def set_root_password(config):
 # Новый пользователь
 # Права sudo
 def create_user(config):
-    pass
 
+    user_name = config['user']['user_name']
+    user_groups = ",".join(config['user']['user_groups'])
+    user_password = config['user']['user_password']
+    user_shell = config['user']['user_shell']
+
+    run_command(f"useradd -m -G {user_groups} -s {user_shell} {user_name}", chroot=True)
+    run_command(f"echo '{user_name}:{user_password}' | chpasswd", chroot=True)
 
 def install_boot_loader(config):
     for partition in config['disk']['partitions']:
