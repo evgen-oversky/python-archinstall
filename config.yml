@@ -12,7 +12,7 @@ disk:
       part_flag: "ef00"
       part_size: "+1G"
       part_fs: "fat32"
-      mount_point: "/boot/efi"
+      mount_point: "/boot"
 
     - create_partition: True
       part_label: "btrfs"
@@ -53,8 +53,6 @@ system:
     - en_US.UTF-8 UTF-8
     - ru_RU.UTF-8 UTF-8
   language: "en_US.UTF-8"
-
-
 
   root_password: "1111"
 

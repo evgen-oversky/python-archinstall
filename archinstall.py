@@ -66,12 +66,15 @@ def mount_partitions(config):
             run_command(f"mkdir -p {part_mount_point}")
             run_command(f"mount {part_dev} {part_mount_point}")
 
+
+
 def install_base_pkgs(config):
     pkgs = " ".join(config['system']['pkgs'])
     run_command(f"pacstrap -K /mnt {pkgs}")
 
 def gen_fstab():
     run_command("genfstab -U /mnt >> /mnt/etc/fstab")
+
 
 def set_geolocation(config):
     time_zone = config['system']['time_zone']
@@ -84,35 +87,35 @@ def set_geolocation(config):
         f.write(f"{locales}")
     with open("/mnt/etc/locale.conf", "w") as f:
         f.write(f"{language}")
-    run_command("locale-gen")
+    run_command("locale-gen", chroot=True)
 
-
-
-
-
-
-def network_setting(config):
+# Сеть
+def set_network(config):
     run_command("systemctl enable systemd-networkd.service")
     run_command("systemctl start systemd-networkd.service")
     
-
-# Сеть
-
-# Новый пользователь
-
-# Права sudo
-
-# Загрузчик
-
-# Клонирование репозитория
 
 def set_root_password(config):
     root_password = config['system']['root_password']
     run_command(f"echo 'root:{root_password}' | chpasswd", chroot=True)
 
+# Новый пользователь
+# Права sudo
+def create_user(config):
+    pass
 
-# Перезагрузка
 
+def install_boot_loader(config):
+    for partition in config['disk']['partitions']:
+        if partition['part_label'] == 'efi':
+            esp_mount_point = partition['mount_point']
+    run_command("bootctl install", chroot=True)
+    run_command(f"cp files/systemd-boot/loader.conf /mnt{esp_mount_point}/loader")
+    run_command(f"cp files/systemd-boot/arch.conf /mnt{esp_mount_point}/loader/entries")
+
+
+
+# Клонирование репозитория
 
 
 if __name__ == "__main__":
@@ -120,15 +123,17 @@ if __name__ == "__main__":
 
     config = load_config()
 
-#    create_partitions(config)
-#    format_partitions(config)
-#    create_subvolumes(config)
-#    mount_subvolumes(config)
-#    mount_partitions(config)
-#    install_base_pkgs(config)
-#    gen_fstab()
-#    set_root_password(config)
+    create_partitions(config)
+    format_partitions(config)
+    create_subvolumes(config)
+    mount_subvolumes(config)
+    mount_partitions(config)
+    install_base_pkgs(config)
+    gen_fstab()
     set_geolocation(config)
+    set_network(config)
+    set_root_password(config)
+    
     duration = time.time() - start_time
     print(f"{duration:.2f}")
 
