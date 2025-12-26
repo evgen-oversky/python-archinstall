@@ -66,8 +66,6 @@ def mount_partitions(config):
             run_command(f"mkdir -p {part_mount_point}")
             run_command(f"mount {part_dev} {part_mount_point}")
 
-
-
 def install_base_pkgs(config):
     pkgs = " ".join(config['system']['pkgs'])
     run_command(f"pacstrap -K /mnt {pkgs}")
@@ -75,13 +73,10 @@ def install_base_pkgs(config):
 def gen_fstab():
     run_command("genfstab -U /mnt >> /mnt/etc/fstab")
 
-
 def set_geolocation(config):
-    
     time_zone = config['system']['time_zone']
     locales = "\n".join(config['system']['locales']) + "\n"
     language = "LANG=" + config['system']['language']
-
     run_command(f"ln -sf /usr/share/zoneinfo/{time_zone} /etc/localtime", chroot=True)
     run_command("hwclock --systohc", chroot=True)
     with open("/mnt/etc/locale.gen", "a") as f:
@@ -90,25 +85,28 @@ def set_geolocation(config):
         f.write(f"{language}")
     run_command("locale-gen", chroot=True)
 
-# Сеть
-def set_network(config):
-    run_command("systemctl enable systemd-networkd.service")
-    run_command("systemctl start systemd-networkd.service")
-    
+def set_network():
+    run_command("cp files/systemd-networkd/20-wired.network /mnt/etc/systemd/network", chroot=True)
+    run_command("cp files/systemd-networkd/25-wireless.network /mnt/etc/systemd/network", chroot=True)
+    run_command("cp files/iwd/main.conf /mnt/etc/iwd", chroot=True)
+    run_command("systemctl enable systemd-networkd.service", chroot=True)
+    run_command("systemctl start systemd-networkd.service", chroot=True)
+    run_command("systemctl enable systemd-resolved.service", chroot=True)
+    run_command("systemctl start systemd-resolved.service", chroot=True)
+    run_command("systemctl enable iwd.service", chroot=True)
+    run_command("systemctl start iwd.service", chroot=True)
+    run_command("ln -sf /mnt/run/systemd/resolve/stub-resolv.conf /etc/resolv.conf", chroot=True)
 
 def set_root_password(config):
     root_password = config['system']['root_password']
     run_command(f"echo 'root:{root_password}' | chpasswd", chroot=True)
 
-# Новый пользователь
 # Права sudo
 def create_user(config):
-
     user_name = config['user']['user_name']
     user_groups = ",".join(config['user']['user_groups'])
     user_password = config['user']['user_password']
     user_shell = config['user']['user_shell']
-
     run_command(f"useradd -m -G {user_groups} -s {user_shell} {user_name}", chroot=True)
     run_command(f"echo '{user_name}:{user_password}' | chpasswd", chroot=True)
 
@@ -120,10 +118,6 @@ def install_boot_loader(config):
     run_command("bootctl install", chroot=True)
     run_command(f"cp files/systemd-boot/loader.conf /mnt{esp_mount_point}/loader", chroot=True)
     run_command(f"cp files/systemd-boot/arch.conf /mnt{esp_mount_point}/loader/entries", chroot=True)
-
-
-
-# Клонирование репозитория
 
 
 if __name__ == "__main__":
@@ -139,9 +133,8 @@ if __name__ == "__main__":
     install_base_pkgs(config)
     gen_fstab()
     set_geolocation(config)
-    set_network(config)
+    set_network()
     set_root_password(config)
     
     duration = time.time() - start_time
     print(f"{duration:.2f}")
-

@@ -61,4 +61,4 @@ user:
   user_password: "555555"
   user_groups:
     - wheel
-  user_shell: "bash"
+  user_shell: "/bin/bash"
