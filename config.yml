@@ -2,35 +2,36 @@
 
 disk:
   device: "/dev/sdb"
-  main_mount_point: "/mnt"
-  new_table: True
+  new_partition_table: True
 
   partitions:
     - create_partition: True
-      part_label: "efi"
-      part_dev: "/dev/sdb1"
-      part_flag: "ef00"
-      part_size: "+1G"
-      part_fs: "fat32"
+      label: "efi"
+      dev: "/dev/sdb1"
+      flag: "ef00"
+      size: "+1G"
+      fs: "fat32"
       mount_point: "/boot"
 
     - create_partition: True
-      part_label: "btrfs"
-      part_dev: "/dev/sdb2"
-      part_flag: "8300"
-      part_size: "0"
-      part_fs: "btrfs"
+      label: "root"
+      dev: "/dev/sdb2"
+      flag: "8300"
+      size: "0"
+      fs: "btrfs"
+      
+      subvolumes:
+        - name: "@arch"
+          mount_point: "/"
+          mount_args: "compress=zstd:1,noatime,space_cache=v2,ssd"
 
-  subvol_mount_args: "compress=zstd:1,noatime,space_cache=v2,ssd"
-  subvolumes:
-    - vol_name: "@arch"
-      mount_point: "/"
+        - name: "@arch-home"
+          mount_point: "/home"
+          mount_args: "compress=zstd:1,noatime,space_cache=v2,ssd"
 
-    - vol_name: "@arch-home"
-      mount_point: "/home"
-    
-    - vol_name: "@snapshots"
-      mount_point: "/.snapshots"
+        - name: "@snapshots"
+          mount_point: "/.snapshots"
+          mount_args: "compress=zstd:1,noatime,space_cache=v2,ssd"
 
 system:
 
