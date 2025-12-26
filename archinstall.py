@@ -111,6 +111,7 @@ def create_user(config):
     user_shell = config['user']['user_shell']
     run_command(f"useradd -m -G {user_groups} -s {user_shell} {user_name}", chroot=True)
     run_command(f"echo '{user_name}:{user_password}' | chpasswd", chroot=True)
+    run_command(r"sed -i 's/^#\s*\(%wheel\s*ALL=(ALL:ALL)\s*ALL\)/\1/' /mnt/etc/sudoers")
 
 def install_boot_loader(config):
     for partition in config['disk']['partitions']:
