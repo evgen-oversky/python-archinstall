@@ -89,13 +89,15 @@ def set_network():
     run_command("cp files/systemd-networkd/20-wired.network /mnt/etc/systemd/network", chroot=True)
     run_command("cp files/systemd-networkd/25-wireless.network /mnt/etc/systemd/network", chroot=True)
     run_command("cp files/iwd/main.conf /mnt/etc/iwd", chroot=True)
+    run_command("cp files/hostname /mnt/etc", chroot=True)
+    run_command("cp files/hosts /mnt/etc", chroot=True)
     run_command("systemctl enable systemd-networkd.service", chroot=True)
     run_command("systemctl start systemd-networkd.service", chroot=True)
     run_command("systemctl enable systemd-resolved.service", chroot=True)
     run_command("systemctl start systemd-resolved.service", chroot=True)
     run_command("systemctl enable iwd.service", chroot=True)
     run_command("systemctl start iwd.service", chroot=True)
-    run_command("ln -sf /mnt/run/systemd/resolve/stub-resolv.conf /etc/resolv.conf", chroot=True)
+    run_command("ln -sf /mnt/run/systemd/resolve/stub-resolv.conf /mnt/etc/resolv.conf", chroot=True)
 
 def set_root_password(config):
     root_password = config['system']['root_password']
