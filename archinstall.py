@@ -86,18 +86,18 @@ def set_geolocation(config):
     run_command("locale-gen", chroot=True)
 
 def set_network():
-    run_command("cp files/systemd-networkd/20-wired.network /mnt/etc/systemd/network", chroot=True)
-    run_command("cp files/systemd-networkd/25-wireless.network /mnt/etc/systemd/network", chroot=True)
-    run_command("cp files/iwd/main.conf /mnt/etc/iwd", chroot=True)
-    run_command("cp files/hostname /mnt/etc", chroot=True)
-    run_command("cp files/hosts /mnt/etc", chroot=True)
+    run_command("cp files/systemd-networkd/20-wired.network /mnt/etc/systemd/network")
+    run_command("cp files/systemd-networkd/25-wireless.network /mnt/etc/systemd/network")
+    run_command("cp files/iwd/main.conf /mnt/etc/iwd")
+    run_command("cp files/hostname /mnt/etc")
+    run_command("cp files/hosts /mnt/etc")
     run_command("systemctl enable systemd-networkd.service", chroot=True)
     run_command("systemctl start systemd-networkd.service", chroot=True)
     run_command("systemctl enable systemd-resolved.service", chroot=True)
     run_command("systemctl start systemd-resolved.service", chroot=True)
     run_command("systemctl enable iwd.service", chroot=True)
     run_command("systemctl start iwd.service", chroot=True)
-    run_command("ln -sf /mnt/run/systemd/resolve/stub-resolv.conf /mnt/etc/resolv.conf", chroot=True)
+    run_command("ln -sf /mnt/run/systemd/resolve/stub-resolv.conf /mnt/etc/resolv.conf")
 
 def set_root_password(config):
     root_password = config['system']['root_password']
@@ -118,8 +118,8 @@ def install_boot_loader(config):
             esp_mount_point = partition['mount_point']
             break
     run_command("bootctl install", chroot=True)
-    run_command(f"cp files/systemd-boot/loader.conf /mnt{esp_mount_point}/loader", chroot=True)
-    run_command(f"cp files/systemd-boot/arch.conf /mnt{esp_mount_point}/loader/entries", chroot=True)
+    run_command(f"cp files/systemd-boot/loader.conf /mnt{esp_mount_point}/loader")
+    run_command(f"cp files/systemd-boot/arch.conf /mnt{esp_mount_point}/loader/entries")
 
 
 if __name__ == "__main__":
